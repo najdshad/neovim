@@ -1654,6 +1654,7 @@ describe('user config init', function()
 
   describe('with explicitly provided config', function()
     local custom_lua_path = ('%s/custom.lua'):format(xhome)
+    local custom_vim_path = ('%s/custom.vim'):format(xhome)
     before_each(function()
       write_file(
         custom_lua_path,
@@ -1661,11 +1662,23 @@ describe('user config init', function()
           vim.g.custom_lua_rc = 1
         ]]
       )
+      write_file(custom_vim_path, [[let g:custom_vim_rc = 1]])
     end)
 
-    it('loads custom lua config and does not set $MYVIMRC', function()
+    it('loads custom lua config and sets $MYVIMRC', function()
       clear { args = { '-u', custom_lua_path }, env = xenv }
       eq(1, eval('g:custom_lua_rc'))
+      eq(fn.fnamemodify(custom_lua_path, ':p'), eval('$MYVIMRC'))
+    end)
+
+    it('loads custom vim config and sets $MYVIMRC', function()
+      clear { args = { '-u', custom_vim_path }, env = xenv }
+      eq(1, eval('g:custom_vim_rc'))
+      eq(fn.fnamemodify(custom_vim_path, ':p'), eval('$MYVIMRC'))
+    end)
+
+    it('does not set $MYVIMRC for -u NONE', function()
+      clear { args = { '-u', 'NONE' }, env = xenv }
       eq('', eval('$MYVIMRC'))
     end)
   end)

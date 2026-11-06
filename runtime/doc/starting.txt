@@ -330,6 +330,9 @@ argument.
 -u {vimrc}      The file {vimrc} is read for initializations.  Most other
                 initializations are skipped; see |initialization|.
 
+                $MYVIMRC is set to {vimrc}, except when {vimrc} is "NONE"
+                or "NORC".
+
                 This can be used to start Vim in a special mode, with special
                 mappings and settings.  A shell alias can be used to make
                 this easy to use.  For example, in a C shell descendant: >
@@ -486,9 +489,10 @@ accordingly, proceeding as follows:
      - |$XDG_CONFIG_HOME|      $XDG_CONFIG_HOME/nvim/init.vim  (or init.lua)
 
    - If Nvim was started with "-u {file}" then {file} is used as the config
-     and all initializations until 8. are skipped. $MYVIMRC is not set.
-     "nvim -u NORC" can be used to skip these initializations without reading
-     a file. "nvim -u NONE" also skips plugins and syntax highlighting.  |-u|
+     and all initializations until 8. are skipped. $MYVIMRC is set to {file}
+     unless it was already set. "nvim -u NORC" can be used to skip these
+     initializations without reading a file. "nvim -u NONE" also skips
+     plugins and syntax highlighting.  |-u|
 
    - If Nvim was started with |-es| or |-Es| or |-l| all initializations until
      "8" are skipped.

@@ -133,7 +133,13 @@ function! s:RegistrationCommands(host) abort
     if type(specs) != type([])
       " host didn't return a spec list, indicates a failure while loading a
       " plugin
+      echomsg printf("remote/host: %s host failed to load plugin: %s",
+            \ a:host, path)
       continue
+    endif
+    if empty(specs)
+      echomsg printf("remote/host: %s plugin exports no handlers: %s",
+            \ a:host, path)
     endif
     call add(lines, "call remote#host#RegisterPlugin('".a:host
           \ ."', '".path."', [")

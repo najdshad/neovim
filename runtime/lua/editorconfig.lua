@@ -2,7 +2,8 @@
 --- EditorConfig is like 'modeline' for an entire (recursive) directory. When a file is opened,
 --- after running |ftplugin|s and |FileType| autocommands, the EditorConfig feature searches all
 --- parent directories of that file for `.editorconfig` files, parses them, and applies their
---- properties. For more information see https://editorconfig.org/.
+--- properties. It is applied again when |FileType| is triggered, so ftplugins do not override it.
+--- For more information see https://editorconfig.org/.
 ---
 --- Example `.editorconfig` file:
 --- ```ini
@@ -330,6 +331,8 @@ function M.config(buf)
   if vim.bo[buf].buftype ~= '' or not vim.bo[buf].modifiable or path == '' then
     return
   end
+
+  vim.api.nvim_clear_autocmds({ group = 'nvim.editorconfig', buffer = buf })
 
   local opts = {} --- @type table<string,string>
   for parent in vim.fs.parents(path) do

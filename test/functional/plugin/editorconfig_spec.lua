@@ -116,6 +116,11 @@ setup(function()
     [max_line_length.txt]
     max_line_length = 42
 
+    [*.rs]
+    indent_style = tab
+    indent_size = 8
+    max_line_length = 120
+
     [negated_[!a].txt]
     max_line_length = 42
 
@@ -289,6 +294,21 @@ But not this one
 
   it('sets textwidth', function()
     test_case('max_line_length.txt', { textwidth = 42 })
+  end)
+
+  it('reapplies after FileType #30334', function()
+    test_case('rust.rs', {
+      expandtab = false,
+      shiftwidth = 8,
+      softtabstop = -1,
+      textwidth = 120,
+    })
+
+    command('set filetype=rust')
+    eq(false, api.nvim_get_option_value('expandtab', { buf = 0 }))
+    eq(8, api.nvim_get_option_value('shiftwidth', { buf = 0 }))
+    eq(-1, api.nvim_get_option_value('softtabstop', { buf = 0 }))
+    eq(120, api.nvim_get_option_value('textwidth', { buf = 0 }))
   end)
 
   it('"[!seq]" glob excludes seq', function()
